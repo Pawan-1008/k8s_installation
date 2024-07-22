@@ -1,3 +1,5 @@
+--------------* Kubernetes Cluster Setup *--------------
+
 #Here, we are using the Ubuntu 20.04 system to set the Kubernetes cluster.
 
 ➔ swapoff -a                    #Apply swapoff -a 
@@ -76,10 +78,9 @@ sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-aptkeyring.gpg
 ➔ sudo systemctl restart containerd.service
 ➔ sudo kubeadm init
 
-#Wait for a few minutes………After you finish you get the above output format.
-
-a. Indicates the config files. 
-b. Indicates the token.
+---------------------------------------------------------------------------------------------------------------
+                                                                                                               
+#Wait for a few minutes………After you finish you get the above output format.                                    
 
 ➔ mkdir -p $HOME/.kube
 ➔ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -89,6 +90,15 @@ b. Indicates the token.
 #apply the above files. And apply the CNI plugins such as follows.
 
 ➔ kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+----------------------------------------------------------------------------------------------------------------
+
+
+#REFERENCE / OFFICIAL LINKS
+
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 
 
 
