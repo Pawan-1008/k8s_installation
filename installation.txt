@@ -1,0 +1,81 @@
+#Here, we are using the Ubuntu 20.04 system to set the Kubernetes cluster.
+
+➔ swapoff -a                    #Apply swapoff -a 
+
+ configure the cri using the following steps.
+
+#sysctl params required by setup, params persist across reboots
+
+➔   cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+     net.ipv4.ip_forward = 1
+     EOF
+
+➔ sudo sysctl –system          #Apply sysctl params without reboot
+➔ sysctl net.ipv4.ip_forward   #Verify that net.ipv4.ip_forward is set to 1 with the above command
+
+
+#Installing the docker engine and verifying it by using the following commands.
+
+➔ curl -fsSL https://get.docker.com -o get-docker.sh
+➔ sh get-docker.sh
+➔ sudo docker info
+
+ #Start and enable docker and check the status of the docker on k8s_controlplane.
+
+➔ Sudo systemctl restart docker
+➔ Sudo systemctl enable docker
+
+
+
+#Edit the /etc/containerd/config.toml and update the following line
+
+enable_plugins = [“containerd”]
+➔ sudo nano /etc/containerd/config.toml
+
+#Save the file and restart the containerd.service.
+
+➔ ctrl + x 
+➔ Ctrl + y
+➔ Press Enter
+
+➔ sudo systemctl restart containerd.service
+➔ sudo systemctl status containerd.service
+➔ sudo apt-get update -y
+
+# apt-transport-https may be a dummy package; if so, you can skip that package
+
+➔ sudo apt-get install -y apt-transport-https ca￾certificates curl gpg
+# Download the public signing key for the Kubernetes package repositories.
+
+➔ curl -fsSL
+https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | 
+sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-aptkeyring.gpg
+
+# Add the appropriate Kubernetes apt repository.
+
+➔ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-aptkeyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ 
+/' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# Update the apt package index, install kubelet, kubeadm and kubectl, and pin their version.
+
+➔ sudo apt-get update
+➔ sudo apt-get install -y kubelet kubeadm kubectl
+➔ sudo apt-mark hold kubelet kubeadm kubectl
+
+
+# If you experience container crash loops after the initial cluster installation or after installing a CNI, the containerd configuration provided with the package might contain incompatible configuration parameters. Consider resetting the containerd.
+
+➔ sudo containerd config default > /etc/containerd/config.toml
+
+
+# Edit this above section in /etc/containerd/config.toml file using the following command.
+
+➔ sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml 
+
+# restart the containerd.service.
+
+➔ sudo systemctl restart containerd.service
+➔ sudo kubeadm init
+
+
+
