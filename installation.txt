@@ -53,8 +53,7 @@ sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-aptkeyring.gpg
 
 # Add the appropriate Kubernetes apt repository.
 
-➔ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-aptkeyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ 
-/' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+➔ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-aptkeyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 # Update the apt package index, install kubelet, kubeadm and kubectl, and pin their version.
 
@@ -76,6 +75,20 @@ sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-aptkeyring.gpg
 
 ➔ sudo systemctl restart containerd.service
 ➔ sudo kubeadm init
+
+#Wait for a few minutes………After you finish you get the above output format.
+
+a. Indicates the config files. 
+b. Indicates the token.
+
+➔ mkdir -p $HOME/.kube
+➔ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+➔ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+#apply the above files. And apply the CNI plugins such as follows.
+
+➔ kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 
 
 
